@@ -2,6 +2,7 @@ import cv2
 import datetime
 import time
 
+
 def captureImage(mSpeed, tI):
     camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)  # set new dimensionns to cam object (not cap)
@@ -11,7 +12,8 @@ def captureImage(mSpeed, tI):
         print("Starting Image Collection..")
         return_value, image = camera.read()
         cv2.imwrite(
-            str(imCount) + '-' + str(mSpeed.value) + '-' + datetime.datetime.now().strftime('%d-%m-%Y-%H-%M-%S') + '.jpg',
+            str(imCount) + '-' + str(mSpeed.value) + '-' + datetime.datetime.now().strftime(
+                '%d-%m-%Y-%H-%M-%S') + '.jpg',
             image)
         print('Just wrote jpg # ' + str(imCount) + '...')
         imCount += 1
