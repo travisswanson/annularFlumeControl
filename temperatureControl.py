@@ -2,7 +2,8 @@ from nanpy import DallasTemperature
 import time
 
 
-sensors = DallasTemperature(2)
+
+sensors = DallasTemperature(2,'COM3')
 n_sensors = sensors.getDeviceCount()
 
 print("There are %d devices connected on pin %d" % (n_sensors, sensors.pin))
@@ -21,3 +22,4 @@ while True:
         print("Let's convert it in Fahrenheit degrees: %0.2f" % DallasTemperature.toFahrenheit(temp))
     print("\n")
     time.sleep(2)
+
