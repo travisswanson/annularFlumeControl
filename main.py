@@ -1,6 +1,7 @@
 import time
 import flumeControl
 import captureImage
+import temperatureControl
 import multiprocessing
 import os
 import cv2
@@ -36,6 +37,7 @@ def main():
 
         P0 = multiprocessing.Process(target=captureImage.captureImage, args=[spinSpeed, takeImages])
         P1 = multiprocessing.Process(target=flumeControl.flumeControl, args=[spinSpeed, takeImages, expCount, expDuration])
+        P2 = multiprocessing.Process(target=temperatureControl.temperatureControl, )
 
         P0.start()
         P1.start()
