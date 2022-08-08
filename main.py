@@ -16,6 +16,11 @@ def main():
     noExp = 10
     VHG = '0MM'
     expDuration = 5 #hours
+    tempControlComPort = 'COM3'
+    flumeControlComPort = 'COM4'
+
+
+
     for exp in range(noExp):
         print('Starting exp: {} ... '.format(exp))
         dir2save = 'C:/Users/User/Documents/flumeImagery/' + str(expDuration) + '_hr/' + VHG + 'V' + str(exp)
@@ -36,15 +41,17 @@ def main():
         expCount = multiprocessing.Value('i', exp)
 
         P0 = multiprocessing.Process(target=captureImage.captureImage, args=[spinSpeed, takeImages])
-        P1 = multiprocessing.Process(target=flumeControl.flumeControl, args=[spinSpeed, takeImages, expCount, expDuration])
-        P2 = multiprocessing.Process(target=temperatureControl.temperatureControl, )
+        P1 = multiprocessing.Process(target=flumeControl.flumeControl, args=[spinSpeed, takeImages, expCount, expDuration, flumeControlComPort])
+        P2 = multiprocessing.Process(target=temperatureControl.temperatureControl, args=[takeImages, tempControlComPort] )
 
         P0.start()
         P1.start()
+        P2.start()
 
         # wait for all processes to complete, motor control before images, of course
         P1.join()
         P0.join()
+        P2.join()
 
         print("Experimental Run {} is complete..".format(exp))
 

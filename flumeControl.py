@@ -4,7 +4,7 @@ import time
 import numpy as np
 import datetime
 
-def flumeControl(mSpeed, tI, eC, eD):
+def flumeControl(mSpeed, tI, eC, eD, comPort):
 
     def runSegment(ard, runTime, motorSpeed, finalSpeed, spinDir, noSteps, file1, ex):
         t = time.time()
@@ -31,24 +31,30 @@ def flumeControl(mSpeed, tI, eC, eD):
     print('Opening a new text file...')
     file1 = open('0mmV' + str(eC.value) + '.txt', 'a')
 
-    print('Looking for an Arduino...')
-    ports = list(serial.tools.list_ports.comports())
-    deviceFound = False
-    for p in ports:
-        print(p)
-        print(p.description)
-        if "Arduino" in p.description:
-            port = p.device
-            print("found an Arduino on " + port)
-            deviceFound = True
+    #print('Looking for an Arduino...')
+    #ports = list(serial.tools.list_ports.comports())
+    #deviceFound = False
+    #for p in ports:
+    #    print(p)
+    #    print(p.description)
+    #    if "Arduino" in p.description:
+    #        port = p.device
+    #        print("found an Arduino on " + port)
+    #        deviceFound = True
             
-    if not deviceFound:
+    #if not deviceFound:
+    #    print("Ardunio was not found.")
+    #    print("terminating image collection")
+    #    tI.value = 0
+    #else:
+    try:
+        ard = serial.Serial(comPort, 9600, timeout=5)
+    except:
         print("Ardunio was not found.")
         print("terminating image collection")
+        print("terminating flume temperature control")
         tI.value = 0
-    else: 
-        ard = serial.Serial(port, 9600, timeout=5)
-
+    else:
         # sleep a little so the Arduino has a chance to catch up
         time.sleep(2)
 
