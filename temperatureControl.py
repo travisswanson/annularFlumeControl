@@ -6,7 +6,7 @@ from nanpy.classinfo import check4firmware
 import time
 from datetime import datetime
 
-def temperatureControl(tI, comPort):
+def temperatureControl(tI, comPort, tempInfo):
 
 
     dallasSensorPin = 2
@@ -15,7 +15,7 @@ def temperatureControl(tI, comPort):
 
     try:
         connection = SerialManager(comPort)
-    except:
+    except Exception:
         print("Ardunio was not found.")
         print("terminating image collection")
         print("terminating flume temperature control")
@@ -44,34 +44,56 @@ def temperatureControl(tI, comPort):
 
         file1 = open('temperatureRecord.txt','a')
 
+        tOld = time.time()
+        goalTemp = tempInfo['highTemp']
+        tempPeriod = tempInfo['tempPeriod']
+        lowTemp = tempInfo['lowTemp']
+        highTemp = tempInfo['highTemp']
+        tmpObs = 0
+
         while tI.value == 1:
+
             t = time.time()
+
+            if t - tOld >= tempPeriod:
+                tOld = t
+                if goalTemp == lowTemp:
+                    goalTemp = highTemp
+                else:
+                    goalTemp = lowTemp
+
+
             sensors.requestTemperatures()
+
             for k in range(n_sensors):
-                temp = sensors.getTempC(i)
+                temp = sensors.getTempC(k)
                 print("Device %d (%s) temperature, in Celsius degrees is %0.2f" % (k, addresses[k], temp))
                 print("Let's convert it in Fahrenheit degrees: %0.2f" % DallasTemperature.toFahrenheit(temp))
-            print("\n")
+                print("\n")
 
             now = datetime.now()
             currentTime = now.strftime("%d/%m/%y %H:%M:%S")
-            L = str(i) + ',' + currentTime + ',' + str(sensors.getTempC(0)) + ',' + str(sensors.getTempC(1))
+            L = str(tmpObs) + ',' + currentTime + ',' + str(sensors.getTempC(0)) + ',' + str(sensors.getTempC(1))
             file1.write(L + ' \n')
 
             if goalTemp - temp[0] > tempTol:
                 # flume temperature is too cold, add heat
                 a.digitalWrite(heatPin, 1)
                 a.digitalWrite(coolingPin, 0)
+                print('Switching to heating...')
             elif goalTemp - temp[0] < tempTol:
                 # flume temperature is too hot, remove heat
                 a.digitalWrite(heatPin, 1)
                 a.digitalWrite(coolingPin, 0)
+                print('Switching to cooling...')
             else:
                 # flume temperature is in tolerance, turn off equipment
                 a.digitalWrite(heatPin, 0)
                 a.digitalWrite(coolingPin, 0)
+                print('Temperature is within tolerance, equipment off')
 
-            print("{} temperature record written".format(i))
+            print("{} temperature record written".format(tmpObs))
+            tmpObs += 1
             time.sleep(15)
 
         print('Temperature Control ending, shutting off equipment')

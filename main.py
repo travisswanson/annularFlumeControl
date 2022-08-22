@@ -18,6 +18,9 @@ def main():
     expDuration = 5 #hours
     tempControlComPort = 'COM3'
     flumeControlComPort = 'COM4'
+    tempInfo = {'lowTemp': 75,
+                'highTemp': 85,
+                'tempPeriod': 2}
 
 
 
@@ -42,7 +45,7 @@ def main():
 
         P0 = multiprocessing.Process(target=captureImage.captureImage, args=[spinSpeed, takeImages])
         P1 = multiprocessing.Process(target=flumeControl.flumeControl, args=[spinSpeed, takeImages, expCount, expDuration, flumeControlComPort])
-        P2 = multiprocessing.Process(target=temperatureControl.temperatureControl, args=[takeImages, tempControlComPort] )
+        P2 = multiprocessing.Process(target=temperatureControl.temperatureControl, args=[takeImages, tempControlComPort, tempInfo] )
 
         P0.start()
         P1.start()

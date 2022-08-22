@@ -49,7 +49,7 @@ def flumeControl(mSpeed, tI, eC, eD, comPort):
     #else:
     try:
         ard = serial.Serial(comPort, 9600, timeout=5)
-    except:
+    except Exception:
         print("Ardunio was not found.")
         print("terminating image collection")
         print("terminating flume temperature control")
