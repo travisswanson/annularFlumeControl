@@ -12,17 +12,14 @@ import serial.tools.list_ports
 
 
 def main():
-  
-    noExp = 10
+    noExp = 1
     VHG = '0MM'
-    expDuration = 5 #hours
-    tempControlComPort = 'COM3'
-    flumeControlComPort = 'COM4'
-    tempInfo = {'lowTemp': 75,
-                'highTemp': 85,
-                'tempPeriod': 2}
-
-
+    expDuration = 5  # hours
+    tempControlComPort = 'COM4'
+    flumeControlComPort = 'COM3'
+    tempInfo = {'lowTemp': 75,  # F
+                'highTemp': 85,  # F
+                'tempPeriod': 0.33333}  # hours
 
     for exp in range(noExp):
         print('Starting exp: {} ... '.format(exp))
@@ -44,8 +41,10 @@ def main():
         expCount = multiprocessing.Value('i', exp)
 
         P0 = multiprocessing.Process(target=captureImage.captureImage, args=[spinSpeed, takeImages])
-        P1 = multiprocessing.Process(target=flumeControl.flumeControl, args=[spinSpeed, takeImages, expCount, expDuration, flumeControlComPort])
-        P2 = multiprocessing.Process(target=temperatureControl.temperatureControl, args=[takeImages, tempControlComPort, tempInfo] )
+        P1 = multiprocessing.Process(target=flumeControl.flumeControl,
+                                     args=[spinSpeed, takeImages, expCount, expDuration, flumeControlComPort])
+        P2 = multiprocessing.Process(target=temperatureControl.temperatureControl,
+                                     args=[takeImages, tempControlComPort, tempInfo])
 
         P0.start()
         P1.start()
