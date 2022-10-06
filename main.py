@@ -14,12 +14,16 @@ import serial.tools.list_ports
 def main():
     noExp = 1
     VHG = '0MM'
-    expDuration = 5  # hours
+    expDuration = 6  # hours
+
+    #arduino com ports
     tempControlComPort = 'COM4'
     flumeControlComPort = 'COM3'
-    tempInfo = {'lowTemp': 75,  # F
-                'highTemp': 85,  # F
-                'tempPeriod': 0.33333}  # hours
+
+
+    tempInfo = {'lowTemp': 60,  # F
+                'highTemp': 100,  # F
+                'tempPeriod': 2}  # hours
 
     for exp in range(noExp):
         print('Starting exp: {} ... '.format(exp))

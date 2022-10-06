@@ -8,6 +8,7 @@ def captureImage(mSpeed, tI):
     camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)  # set new dimensionns to cam object (not cap)
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
     imCount = 0
+
     while tI.value == 1:
         print("Starting Image Collection..")
         return_value, image = camera.read()
